@@ -6,4 +6,4 @@
     ->except('x-bind:id')">
     {!! $value ?? '' !!}
 </x-moonshine::form.input>
-<div id="editorjs"></div>
+<div class="p-editorjs" id="editorjs"></div>

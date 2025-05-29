@@ -20,8 +20,10 @@ class EditorJS extends Text
 
         $editorFile = $manifest['resources/assets/js/editor.js']['file'] ?? '';
         $initFile = $manifest['resources/assets/js/editor-init.js']['file'] ?? '';
+        $cssFile = $manifest['resources/assets/scss/editor-js.scss']['file'] ?? '';
 
         return [
+            Css::make(Vite::asset("public/vendor/povly/moonshine-editorjs/$cssFile")),
             Js::make(Vite::asset("public/vendor/povly/moonshine-editorjs/$editorFile")),
             Js::make(Vite::asset("public/vendor/povly/moonshine-editorjs/$initFile")),
         ];
