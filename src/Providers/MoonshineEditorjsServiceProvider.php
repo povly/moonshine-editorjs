@@ -21,7 +21,7 @@ class MoonshineEditorjsServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'povly-moonshine-editorjs');
         $this->publishes([
-            __DIR__ . '/../../resources' => public_path('vendor/povly/moonshine-editorjs'),
+            __DIR__ . '/../../public/vendor' => public_path('vendor/povly'),
         ], 'povly-moonshine-editorjs-assets');
     }
 }
