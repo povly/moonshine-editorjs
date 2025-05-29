@@ -1,3 +1,3 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log(true);
+    const editor = new EditorJS('editorjs');
 });

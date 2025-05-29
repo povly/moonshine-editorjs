@@ -1,0 +1,33 @@
+{
+    "name": "moonshine-editorjs",
+    "version": "1.0.0",
+    "description": "1. Integrate [Editor.js](https://editorjs.io/)",
+    "keywords": [
+        "editorjs"
+    ],
+    "homepage": "https://github.com/povly/moonshine-editorjs#readme",
+    "bugs": {
+        "url": "https://github.com/povly/moonshine-editorjs/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/povly/moonshine-editorjs.git"
+    },
+    "license": "ISC",
+    "author": "Anatoly Porshnyov",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@editorjs/editorjs": "^2.30.8",
+        "alpinejs": "^3.14.9",
+        "autoprefixer": "^10.4.21",
+        "laravel-vite-plugin": "^1.2.0",
+        "sass": "^1.89.0",
+        "tailwindcss": "^4.1.8"
+    },
+    "dependencies": {}
+}
