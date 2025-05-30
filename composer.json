@@ -3,7 +3,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Povly\\MoonshineEditorjs\\": "src/"
+            "Povly\\MoonshineEditorJs\\": "src/"
         }
     },
     "authors": [
@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Povly\\MoonshineEditorjs\\Providers\\MoonshineEditorjsServiceProvider"
+                "Povly\\MoonshineEditorJs\\Providers\\EditorJsServiceProvider"
             ]
         }
     }

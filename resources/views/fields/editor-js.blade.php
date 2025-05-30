@@ -6,4 +6,11 @@
     ->except('x-bind:id')">
     {!! $value ?? '' !!}
 </x-moonshine::form.input>
-<div class="p-editorjs" id="editorjs"></div>
+<div class="p-editorjs" id="editorjs" data-value="{{ $value }}"></div>
+@push('scripts')
+    <script>
+        const povlyMoonshineEditorJs = {
+            blocks: @json(new \Povly\MoonshineEditorJs\Services\EditorJsBlockManager()->getAllBlockConfigs()),
+        };
+    </script>
+@endpush
