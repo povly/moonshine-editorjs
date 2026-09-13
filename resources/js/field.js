@@ -1,4 +1,5 @@
 import EditorJS from '@editorjs/editorjs';
+import './registry.js';
 import EditorConfigTools from './editorConfigTools.js';
 
 /**
@@ -156,6 +157,11 @@ function initEditorFromTextarea(textarea) {
 
     const container = textarea.parentElement?.querySelector('.editorjs-container');
     if (container) {
+        // JSON field clones the template row: wipe copied editor DOM
+        if (container.childElementCount > 0) {
+            container.innerHTML = '';
+        }
+
         createEditor(textarea, container);
     }
 }
