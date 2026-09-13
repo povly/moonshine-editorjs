@@ -179,7 +179,9 @@ document.addEventListener('layouts:block-added', () => {
 
 // 2. TableBuilder (Json/Repeater)
 document.addEventListener('alpine:init', () => {
-    initAllEditors();
+    // deferred so classic-script DOMContentLoaded tool registrations
+    // (window.MoonShineEditorJs.registerTool) run before editors are created
+    setTimeout(() => initAllEditors(), 0);
 
     const forms = document.querySelectorAll('form[data-component]');
     forms.forEach((form) => {
