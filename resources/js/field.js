@@ -170,24 +170,38 @@ function initAllEditors() {
     document.querySelectorAll('[data-type="editor-js"]').forEach(initEditorFromTextarea);
 }
 
-document.addEventListener('DOMContentLoaded', initAllEditors);
+// The initial pass runs only from the DOMContentLoaded listener, in a
+// macrotask so every other DOMContentLoaded listener (external tool
+// registrations via window.MoonShineEditorJs.registerTool) completes first.
+// Alpine dispatches alpine:init between parse end and DOMContentLoaded,
+// so readyState alone cannot gate it - only this flag can.
+let domReady = document.readyState !== 'loading';
+
+document.addEventListener('DOMContentLoaded', () => {
+    domReady = true;
+    setTimeout(initAllEditors, 0);
+});
+
+function initDynamicEditors() {
+    if (! domReady) {
+        return;
+    }
+
+    initAllEditors();
+}
 
 // 1. Layouts field
-document.addEventListener('layouts:block-added', () => {
-    initAllEditors();
-});
+document.addEventListener('layouts:block-added', initDynamicEditors);
 
 // 2. TableBuilder (Json/Repeater)
 document.addEventListener('alpine:init', () => {
-    // deferred so classic-script DOMContentLoaded tool registrations
-    // (window.MoonShineEditorJs.registerTool) run before editors are created
-    setTimeout(() => initAllEditors(), 0);
+    initDynamicEditors();
 
     const forms = document.querySelectorAll('form[data-component]');
     forms.forEach((form) => {
         const formName = form.getAttribute('data-component');
         document.addEventListener('show_when_refresh:' + formName, (e) => {
-            setTimeout(() => initAllEditors(), 10);
+            setTimeout(initDynamicEditors, 10);
         });
     });
 });
@@ -199,7 +213,7 @@ const observer = new MutationObserver((mutations) => {
             if (node.nodeType === 1 &&
                 (node.querySelector?.('[data-type="editor-js"]') ||
                     node.dataset?.type === 'editor-js')) {
-                setTimeout(() => initAllEditors(), 10);
+                setTimeout(initDynamicEditors, 10);
             }
         });
     });
