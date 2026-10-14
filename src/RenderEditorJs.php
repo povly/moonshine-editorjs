@@ -24,6 +24,8 @@ final class RenderEditorJs
     public function render(string $data): string
     {
         try {
+            $data = $this->normalizeListBlocks($data);
+
             $registry = app(EditorJsToolRegistry::class);
 
             $renderSettings = array_merge_recursive(
@@ -56,6 +58,66 @@ final class RenderEditorJs
         } catch (EditorJSException $e) {
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Приводит list-блоки к легаси-формату валидатора: новый @editorjs/list
+     * 2.x сохраняет элементы объектами {content, items, meta} и добавляет
+     * meta на уровне блока, а конфигурация валидации ждёт плоские строки.
+     * Невалидный JSON идёт дальше как есть — своё исключение бросит EditorJS.
+     */
+    private function normalizeListBlocks(string $data): string
+    {
+        $decoded = json_decode($data, true);
+
+        if (! is_array($decoded) || ! is_array($decoded['blocks'] ?? null)) {
+            return $data;
+        }
+
+        foreach ($decoded['blocks'] as $index => $block) {
+            if (! is_array($block) || ($block['type'] ?? null) !== 'list' || ! is_array($block['data'] ?? null)) {
+                continue;
+            }
+
+            unset($decoded['blocks'][$index]['data']['meta']);
+
+            if (is_array($decoded['blocks'][$index]['data']['items'] ?? null)) {
+                $decoded['blocks'][$index]['data']['items'] = $this->flattenListItems($decoded['blocks'][$index]['data']['items']);
+            }
+        }
+
+        return (string) json_encode($decoded, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Элементы нового формата — объекты {content, items, meta}: content
+     * становится строкой пункта, вложенные подпункты разворачиваются в тот
+     * же плоский уровень (вью рендерит одноуровневый список). Строки
+     * старого формата проходят без изменений.
+     *
+     * @param  list<mixed>  $items
+     * @return list<string>
+     */
+    private function flattenListItems(array $items): array
+    {
+        $flat = [];
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $content = trim((string) ($item['content'] ?? ''));
+
+                if ($content !== '') {
+                    $flat[] = $content;
+                }
+
+                $nested = is_array($item['items'] ?? null) ? $item['items'] : [];
+                $flat = [...$flat, ...$this->flattenListItems($nested)];
+            } elseif (is_string($item)) {
+                $flat[] = $item;
+            }
+        }
+
+        return $flat;
     }
 
 }
